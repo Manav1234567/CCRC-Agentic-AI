@@ -6,4 +6,4 @@ climate_news_data.pkl
 climate_news_data.parquet
 climate_vectors.npy
 climate_agent_docker/milvus_data
-climate_agent_docker/milvus_volumesgit reset HEAD~1
+climate_agent_docker/milvus_volumes
