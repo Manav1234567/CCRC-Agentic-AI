@@ -1,9 +1,4 @@
 dataset/
 env/
-climate_news.db
-.climate_news.db.lock
-climate_news_data.pkl
-climate_news_data.parquet
-climate_vectors.npy
 climate_agent_docker/milvus_data
 climate_agent_docker/milvus_volumes
