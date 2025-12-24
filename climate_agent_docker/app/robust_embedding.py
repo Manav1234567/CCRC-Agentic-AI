@@ -6,10 +6,9 @@ from langchain_core.embeddings import Embeddings
 class RobustLMStudioEmbeddings(Embeddings):
     """
     A custom embedding class that uses 'requests' (which we know works) 
-    instead of 'httpx' (which is failing).
+    instead of 'httpx' (which is failing). It also specifies the dimension.
     """
     def __init__(self, base_url: str, model: str):
-        # Ensure URL doesn't end with slash
         self.base_url = base_url.rstrip("/")
         self.model = model
 
@@ -17,7 +16,6 @@ class RobustLMStudioEmbeddings(Embeddings):
         """Embed a list of texts (used for adding data)."""
         url = f"{self.base_url}/embeddings"
         
-        # Construct payload exactly like your working test script
         payload = {
             "model": self.model,
             "input": texts
@@ -27,7 +25,6 @@ class RobustLMStudioEmbeddings(Embeddings):
             response = requests.post(url, json=payload, timeout=30)
             response.raise_for_status()
             data = response.json()
-            # Extract embeddings ensuring order is preserved
             return [item["embedding"] for item in data["data"]]
         except Exception as e:
             print(f"❌ Embedding Error: {e}")

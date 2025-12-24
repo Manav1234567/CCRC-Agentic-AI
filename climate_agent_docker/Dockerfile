@@ -24,4 +24,4 @@ COPY app/ ./app/
 # Set entry point
 
 # Change the entry point to launch Streamlit
-CMD ["streamlit", "run", "app/frontend.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["uvicorn", "app.api_server:app", "--host", "0.0.0.0", "--port", "8000"]

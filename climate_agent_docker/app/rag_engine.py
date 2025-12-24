@@ -2,7 +2,7 @@ import os
 from langchain_milvus import Milvus
 from langchain_openai import ChatOpenAI
 # 1. IMPORT YOUR NEW CLASS
-from robust_embedding import RobustLMStudioEmbeddings 
+from app.robust_embedding import RobustLMStudioEmbeddings 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
@@ -23,7 +23,7 @@ class ClimateRAG:
         # We use the exact model ID you confirmed via cURL
         self.embeddings = RobustLMStudioEmbeddings(
             base_url=self.llm_base_url,
-            model="text-embedding-qwen3-embedding-4b" 
+            model="text-embedding-qwen3-embedding-4b"
         )
         
         # 3. LLM Setup (Chat model)
@@ -42,7 +42,7 @@ class ClimateRAG:
             text_field="text",
             auto_id=True
         )
-        self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
+        self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 1})
 
         template = """You are a Climate Expert. Use the context below to answer.
         

@@ -9,3 +9,6 @@ milvus-lite
 requests
 matplotlib
 streamlit
+fastapi
+uvicorn
+python-multipart
