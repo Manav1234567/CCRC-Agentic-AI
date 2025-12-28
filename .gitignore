@@ -1,4 +1,4 @@
 dataset/
 env/
-climate_agent_docker/milvus_data
-climate_agent_docker/milvus_volumes
+climate_agent_docker/
+.webui_secret_key

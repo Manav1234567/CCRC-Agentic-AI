@@ -6,12 +6,27 @@ from db_manager import DatabaseManager
 st.set_page_config(page_title="Climate Agent", page_icon="🌍", layout="wide")
 
 
-# --- MAIN APP: Auto-Hydrate Logic ---
 st.title("🌍 Climate News Agent")
+
+# --- DATABASE MANAGEMENT SIDEBAR ---
+with st.sidebar:
+    st.header("Database Management")
+    db_mgr = DatabaseManager()
+    count = db_mgr.get_count()
+    st.write(f"Current Records in Milvus: **{count}**")
+    
+    if st.button("Force Re-Sync Data"):
+        with st.spinner("Syncing Parquet/NPY to Milvus..."):
+            success, msg = db_mgr.ingest_default_data()
+            if success:
+                st.success(msg)
+                st.rerun()
+            else:
+                st.error(msg)
 
 
 # CHAT INTERFACE
-# Only load the RAG engine if we actually have data
+# frontend.py
 if "agent" not in st.session_state:
     with st.spinner("Loading AI Models..."):
         st.session_state.agent = ClimateRAG()

@@ -56,6 +56,9 @@ services:
   # --- YOUR AGENT ---
   climate-agent:
       build: .
+      volumes:
+        - .:/app
+        - ./data:/app/data
       ports:
         - "8501:8501"  # Expose Streamlit port
       environment:

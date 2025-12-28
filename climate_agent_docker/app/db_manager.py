@@ -5,20 +5,21 @@ from pymilvus import MilvusClient, DataType
 
 class DatabaseManager:
     def __init__(self):
-        # Use the internal Docker URL by default
         self.uri = os.getenv("MILVUS_URI", "http://milvus:19530")
         self.collection_name = "climate_articles"
-        self.data_dir = "/app/data"  # Path inside Docker
+        # We use /app/data because that is where the volume should be mounted
+        self.data_dir = "/app/data" 
 
     def get_client(self):
         return MilvusClient(uri=self.uri)
 
     def get_count(self):
-        """Returns the number of articles in the database."""
         try:
             client = self.get_client()
             if not client.has_collection(self.collection_name):
                 return 0
+            # Explicitly load to ensure we get a real count
+            client.load_collection(self.collection_name)
             res = client.query(collection_name=self.collection_name, filter="", output_fields=["count(*)"])
             return res[0]["count(*)"]
         except Exception as e:
@@ -26,23 +27,27 @@ class DatabaseManager:
             return -1
 
     def ingest_default_data(self):
-        """Reads .parquet and .npy files from /app/data and inserts them."""
         parquet_path = os.path.join(self.data_dir, "climate_news_data.parquet")
         npy_path = os.path.join(self.data_dir, "climate_vectors.npy")
 
+        # DEBUG PRINTS: This helps us find the path mismatch
+        print(f"🔍 Checking for Parquet at: {os.path.abspath(parquet_path)}")
+        print(f"🔍 Checking for NPY at: {os.path.abspath(npy_path)}")
+
         if not os.path.exists(parquet_path) or not os.path.exists(npy_path):
-            return False, "Data files not found in /app/data"
+            return False, f"Files not found. Searched in: {self.data_dir}"
 
         client = self.get_client()
         
-        # 1. Recreate Collection
+        # 1. Recreate Collection with specific primary key naming for LangChain
         if client.has_collection(self.collection_name):
             client.drop_collection(self.collection_name)
         
         schema = client.create_schema(auto_id=True, enable_dynamic_field=True)
+        # Use 'id' to match your previous schema
         schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
         schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=2560)
-        # Add index immediately
+        
         index_params = client.prepare_index_params()
         index_params.add_index(field_name="vector", index_type="AUTOINDEX", metric_type="COSINE")
         
@@ -58,20 +63,27 @@ class DatabaseManager:
         
         data_to_insert = []
         for idx, row in df.iterrows():
-            date_str = row['date'].strftime('%Y-%m-%d') if pd.notnull(row['date']) else ""
+            # Handle date formatting safely
+            try:
+                date_val = row.get('date', "")
+                date_str = date_val.strftime('%Y-%m-%d') if hasattr(date_val, 'strftime') else str(date_val)
+            except:
+                date_str = ""
+
             entry = {
                 "vector": vectors[idx].tolist(),
-                "text": str(row['body']),
-                "title": str(row['title']),
-                "category": str(row['category']),
+                "text": str(row.get('body', '')),
+                "title": str(row.get('title', 'Untitled')),
+                "category": str(row.get('category', 'News')),
                 "date": date_str,
-                "tags": str(row['tags'])
+                "tags": str(row.get('tags', '[]'))
             }
             data_to_insert.append(entry)
 
-        # Batch Insert
-        batch_size = 100
+        # 3. Insert and Load
+        batch_size = 200
         for i in range(0, len(data_to_insert), batch_size):
             client.insert(collection_name=self.collection_name, data=data_to_insert[i:i+batch_size])
             
+        client.load_collection(self.collection_name)
         return True, f"Successfully inserted {len(data_to_insert)} records."

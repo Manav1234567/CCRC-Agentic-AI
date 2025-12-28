@@ -39,7 +39,9 @@ class ClimateRAG:
             embedding_function=self.embeddings,
             connection_args={"uri": milvus_uri},
             collection_name="climate_articles",
-            text_field="text",
+            text_field="text",         # Matches your 'entry' dict in db_manager
+            vector_field="vector",     # Matches your schema
+            primary_field="id",        # 🔴 This must match your schema.add_field name
             auto_id=True
         )
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
