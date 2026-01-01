@@ -7,14 +7,14 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel
 from typing import List, Optional
 
-# 🔌 Import the brain
+import constants
+
 from rag import answer_query
 
 # ------------------------------------------------------------------
 # CONFIG
 # ------------------------------------------------------------------
-LLM_HOST = "http://127.0.0.1:1234"      # LM Studio base (NO /v1)
-PROXY_BACKEND = f"{LLM_HOST}/v1"        # Forward unknown routes here
+PROXY_BACKEND = f"{constants.LLM_ENDPOINT}/v1"        # Forward unknown routes here
 
 APP_PORT = 8001
 
@@ -54,6 +54,8 @@ def chat_endpoint(query: QueryRequest):
 # ------------------------------------------------------------------
 # OPENAI-COMPATIBLE CHAT COMPLETIONS (Open WebUI entrypoint)
 # ------------------------------------------------------------------
+# main.py
+
 @app.post("/v1/chat/completions")
 def openai_chat_completions(req: ChatCompletionRequest):
     try:
@@ -62,13 +64,22 @@ def openai_chat_completions(req: ChatCompletionRequest):
             raise HTTPException(status_code=400, detail="No user message provided")
 
         user_question = user_messages[-1]
-        print(f"💬 /v1/chat/completions → {user_question}")
+        
+        result = answer_query(user_question)
 
-        answer = answer_query(user_question)
-        if hasattr(answer, "content"):
-            answer_text = answer.content
-        else:
-            answer_text = str(answer)
+        answer_text = result.content if hasattr(result, "content") else str(result)
+        
+        # Open WebUI looks for "reasoning_content" specifically
+        reasoning_text = result.reasoning_content if hasattr(result, "reasoning_content") else None
+
+        usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        if hasattr(result, "response_metadata"):
+            token_info = result.response_metadata.get("token_usage", {})
+            usage = {
+                "prompt_tokens": token_info.get("prompt_tokens", 0),
+                "completion_tokens": token_info.get("completion_tokens", 0),
+                "total_tokens": token_info.get("total_tokens", 0)
+            }
 
         return {
             "id": f"chatcmpl-{uuid.uuid4().hex}",
@@ -80,16 +91,13 @@ def openai_chat_completions(req: ChatCompletionRequest):
                     "index": 0,
                     "message": {
                         "role": "assistant",
-                        "content": answer_text
+                        "content": answer_text,
+                        "reasoning_content": reasoning_text
                     },
                     "finish_reason": "stop"
                 }
             ],
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": 0,
-                "total_tokens": 0
-            }
+            "usage": usage
         }
 
     except Exception as e:
@@ -148,5 +156,5 @@ async def proxy_to_lmstudio(request: Request, path: str):
 # ENTRYPOINT
 # ------------------------------------------------------------------
 if __name__ == "__main__":
-    print("🚀 Climate RAG Gateway running on http://127.0.0.1:8001")
-    uvicorn.run(app, host="127.0.0.1", port=APP_PORT)
+    print(f"🚀 Climate RAG Gateway running on http://{constants.RAG_HOST}:{constants.RAG_PORT}")
+    uvicorn.run(app, host=constants.RAG_HOST, port=constants.RAG_PORT)

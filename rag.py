@@ -7,21 +7,23 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_milvus import Milvus
 
+import constants
+
 
 
 # SETUP MODELS
 embeddings = OpenAIEmbeddings(
-    base_url="http://127.0.0.1:1234/v1",
-    api_key="lm-studio",
-    model="Qwen3-Embedding-4B-GGUF",
-    check_embedding_ctx_length=False
+    base_url = f"{constants.EMBEDDING_ENDPOINT}/v1",
+    api_key = constants.EMBEDDING_API_KEY,
+    model = constants.EMBEDDING_MODEL,
+    check_embedding_ctx_length = False
 )
 
 llm = ChatOpenAI(
-    base_url="http://127.0.0.1:1234/v1",
-    api_key="local-key",
-    model="nvidia/nemotron-3-nano",
-    temperature=0.1
+    base_url = f"{constants.LLM_ENDPOINT}/v1",
+    api_key = constants.LLM_API_KEY,
+    model = constants.LLM_MODEL,
+    temperature = constants.LLM_TEMPERATURE
 )
 
 # ------------------------------------------------------------------
@@ -103,6 +105,7 @@ Your job is to decide which collections (if any) should be queried
 to answer the user question.
 
 Rules:
+- You can select multiple collections.
 - Only select collections that are clearly relevant.
 - If none are relevant, return "none".
 - Return ONLY valid JSON.
@@ -216,7 +219,7 @@ def answer_query(query: str):
             f"You are a climate expert.\n"
             f"Answer from general knowledge and say so if needed\n\n"
             f"Question: {query}"
-        ).content
+        )
 
     if isinstance(collections, str):
         collections = [collections]
@@ -237,6 +240,4 @@ def answer_query(query: str):
         }
     )
 
-    if hasattr(result, "content"):
-        return result.content
-    return str(result)
+    return result
