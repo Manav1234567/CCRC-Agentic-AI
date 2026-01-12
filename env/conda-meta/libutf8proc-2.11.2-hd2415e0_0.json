@@ -1,0 +1,105 @@
+{
+  "build": "hd2415e0_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "__osx >=11.0"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/libutf8proc-2.11.2-hd2415e0_0",
+  "files": [
+    "include/utf8proc.h",
+    "lib/cmake/utf8proc/utf8proc-config-version.cmake",
+    "lib/cmake/utf8proc/utf8proc-config.cmake",
+    "lib/cmake/utf8proc/utf8proc-targets-release.cmake",
+    "lib/cmake/utf8proc/utf8proc-targets.cmake",
+    "lib/libutf8proc.3.2.2.dylib",
+    "lib/libutf8proc.3.dylib",
+    "lib/libutf8proc.dylib",
+    "lib/pkgconfig/libutf8proc.pc"
+  ],
+  "fn": "libutf8proc-2.11.2-hd2415e0_0.conda",
+  "license": "MIT",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/libutf8proc-2.11.2-hd2415e0_0",
+    "type": 1
+  },
+  "md5": "1ae98806b064c48f184d7c6e0ac506b6",
+  "name": "libutf8proc",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/libutf8proc-2.11.2-hd2415e0_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "include/utf8proc.h",
+        "path_type": "hardlink",
+        "sha256": "01620f1cd802a12aecdf5664ced3bc8147c19162c50d8019145462c6634ab9df",
+        "sha256_in_prefix": "01620f1cd802a12aecdf5664ced3bc8147c19162c50d8019145462c6634ab9df",
+        "size_in_bytes": 34049
+      },
+      {
+        "_path": "lib/cmake/utf8proc/utf8proc-config-version.cmake",
+        "path_type": "hardlink",
+        "sha256": "e93757cf3a0c7f7e25b2e98ace2a4f3b9a2d07247daf611115bc07ff58797cc2",
+        "sha256_in_prefix": "e93757cf3a0c7f7e25b2e98ace2a4f3b9a2d07247daf611115bc07ff58797cc2",
+        "size_in_bytes": 2765
+      },
+      {
+        "_path": "lib/cmake/utf8proc/utf8proc-config.cmake",
+        "path_type": "hardlink",
+        "sha256": "a6fedadca3702ebba6dad98edf96af2ced6df8b232d409990a61747545ca6e21",
+        "sha256_in_prefix": "a6fedadca3702ebba6dad98edf96af2ced6df8b232d409990a61747545ca6e21",
+        "size_in_bytes": 904
+      },
+      {
+        "_path": "lib/cmake/utf8proc/utf8proc-targets-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "e12c4b9ed8aeed9d73a824c3b4ac43a47db2c7cc90fea32b817943c932db1ecc",
+        "sha256_in_prefix": "e12c4b9ed8aeed9d73a824c3b4ac43a47db2c7cc90fea32b817943c932db1ecc",
+        "size_in_bytes": 892
+      },
+      {
+        "_path": "lib/cmake/utf8proc/utf8proc-targets.cmake",
+        "path_type": "hardlink",
+        "sha256": "3056a155c728a585f5b782306ea83814d7e6cda8e8bc5dcc18655063117181d7",
+        "sha256_in_prefix": "3056a155c728a585f5b782306ea83814d7e6cda8e8bc5dcc18655063117181d7",
+        "size_in_bytes": 4134
+      },
+      {
+        "_path": "lib/libutf8proc.3.2.2.dylib",
+        "path_type": "hardlink",
+        "sha256": "4aeb80476f19527ad37fe921a58a8c4c9e374b76a65789ecb5e7b24062ccafc0",
+        "sha256_in_prefix": "4aeb80476f19527ad37fe921a58a8c4c9e374b76a65789ecb5e7b24062ccafc0",
+        "size_in_bytes": 400112
+      },
+      {
+        "_path": "lib/libutf8proc.3.dylib",
+        "path_type": "softlink",
+        "sha256": "4aeb80476f19527ad37fe921a58a8c4c9e374b76a65789ecb5e7b24062ccafc0",
+        "size_in_bytes": 400112
+      },
+      {
+        "_path": "lib/libutf8proc.dylib",
+        "path_type": "softlink",
+        "sha256": "4aeb80476f19527ad37fe921a58a8c4c9e374b76a65789ecb5e7b24062ccafc0",
+        "size_in_bytes": 400112
+      },
+      {
+        "_path": "lib/pkgconfig/libutf8proc.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/libutf8proc_1764062148293/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placeho",
+        "sha256": "2da0a37be8f27d80956b04570e1b207fcb7b3759352c28b7ccaa8c33b1c20e32",
+        "sha256_in_prefix": "97256e82081e373f9008c635a215db35dea75167c3222151bbed4ede3710ee1e",
+        "size_in_bytes": 1213
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "5c7d4268a1bd02f3cbba6d8a8f9bd47829a46dbc81690a39b1c05e698c180570",
+  "size": 88014,
+  "subdir": "osx-arm64",
+  "timestamp": 1764062565000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/libutf8proc-2.11.2-hd2415e0_0.conda",
+  "version": "2.11.2"
+}

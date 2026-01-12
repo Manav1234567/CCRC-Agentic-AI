@@ -1,0 +1,12 @@
+prefix=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env
+exec_prefix=${prefix}
+libdir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/lib
+includedir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/include
+
+Name: absl_log_sink_registry
+Description: Abseil log_sink_registry library
+URL: https://abseil.io/
+Version: 20250512
+Requires: absl_config = 20250512, absl_log_sink = 20250512, absl_log_internal_log_sink_set = 20250512, absl_nullability = 20250512
+Libs: -L${libdir}  
+Cflags: -I${includedir} -Wno-float-conversion -Wno-implicit-float-conversion -Wno-implicit-int-float-conversion -Wno-unknown-warning-option -DNOMINMAX

@@ -1,0 +1,157 @@
+{
+  "build": "py314h8cb506f_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "__osx >=11.0",
+    "python >=3.14,<3.15.0a0",
+    "python >=3.14,<3.15.0a0 *_cp314",
+    "python_abi 3.14.* *_cp314",
+    "xxhash >=0.8.3,<0.8.4.0a0"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/python-xxhash-3.6.0-py314h8cb506f_1",
+  "files": [
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/INSTALLER",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/METADATA",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/RECORD",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/REQUESTED",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/WHEEL",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/direct_url.json",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/licenses/LICENSE",
+    "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/top_level.txt",
+    "lib/python3.14/site-packages/xxhash/__init__.py",
+    "lib/python3.14/site-packages/xxhash/__init__.pyi",
+    "lib/python3.14/site-packages/xxhash/__pycache__/__init__.cpython-314.pyc",
+    "lib/python3.14/site-packages/xxhash/__pycache__/version.cpython-314.pyc",
+    "lib/python3.14/site-packages/xxhash/_xxhash.cpython-314-darwin.so",
+    "lib/python3.14/site-packages/xxhash/py.typed",
+    "lib/python3.14/site-packages/xxhash/version.py"
+  ],
+  "fn": "python-xxhash-3.6.0-py314h8cb506f_1.conda",
+  "license": "BSD-2-Clause",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/python-xxhash-3.6.0-py314h8cb506f_1",
+    "type": 1
+  },
+  "md5": "51da513d16efa9a6a5582ab82f244191",
+  "name": "python-xxhash",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/python-xxhash-3.6.0-py314h8cb506f_1.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/INSTALLER",
+        "path_type": "hardlink",
+        "sha256": "d0edee15f91b406f3f99726e44eb990be6e34fd0345b52b910c568e0eef6a2a8",
+        "sha256_in_prefix": "d0edee15f91b406f3f99726e44eb990be6e34fd0345b52b910c568e0eef6a2a8",
+        "size_in_bytes": 5
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/METADATA",
+        "path_type": "hardlink",
+        "sha256": "9dcdbae3ea685db00dc0691d6f90ec6c1d74349658f97e5a4f55f9bdf183db21",
+        "sha256_in_prefix": "9dcdbae3ea685db00dc0691d6f90ec6c1d74349658f97e5a4f55f9bdf183db21",
+        "size_in_bytes": 13171
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/RECORD",
+        "path_type": "hardlink",
+        "sha256": "89bb8ad01440aa91d83f135f0effd9d6a0ad6dc60ddf72eb567ef7c6b9b82930",
+        "sha256_in_prefix": "89bb8ad01440aa91d83f135f0effd9d6a0ad6dc60ddf72eb567ef7c6b9b82930",
+        "size_in_bytes": 1151
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/REQUESTED",
+        "path_type": "hardlink",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sha256_in_prefix": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_in_bytes": 0
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/WHEEL",
+        "path_type": "hardlink",
+        "sha256": "ea6a91fba5a79f69919cc316ca669b66eb50767b19e8d1063150e88000344c69",
+        "sha256_in_prefix": "ea6a91fba5a79f69919cc316ca669b66eb50767b19e8d1063150e88000344c69",
+        "size_in_bytes": 109
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/direct_url.json",
+        "path_type": "hardlink",
+        "sha256": "48ea6a1b98243446f798eecd7e55525f8fe1ffee40a1ee44567f907bfb8cd869",
+        "sha256_in_prefix": "48ea6a1b98243446f798eecd7e55525f8fe1ffee40a1ee44567f907bfb8cd869",
+        "size_in_bytes": 101
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/licenses/LICENSE",
+        "path_type": "hardlink",
+        "sha256": "b3c620adc9a8812cc0c3c7fc09567fa9a9930d3546de955dfb955b168cf989ac",
+        "sha256_in_prefix": "b3c620adc9a8812cc0c3c7fc09567fa9a9930d3546de955dfb955b168cf989ac",
+        "size_in_bytes": 1313
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash-3.6.0.dist-info/top_level.txt",
+        "path_type": "hardlink",
+        "sha256": "d4f3d204ffa09e31b9f44e5b8a0ccc4f3993e815568c7c27a733228ac3d66792",
+        "sha256_in_prefix": "d4f3d204ffa09e31b9f44e5b8a0ccc4f3993e815568c7c27a733228ac3d66792",
+        "size_in_bytes": 15
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/__init__.py",
+        "path_type": "hardlink",
+        "sha256": "98f11d8a1c43314d2b8cb5ae9b716b53d51ada343eaf37dec1880883e27e2657",
+        "sha256_in_prefix": "98f11d8a1c43314d2b8cb5ae9b716b53d51ada343eaf37dec1880883e27e2657",
+        "size_in_bytes": 1147
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/__init__.pyi",
+        "path_type": "hardlink",
+        "sha256": "c2d508c75913a9e8b93d13db6927c2adac7dbfd1371a81876b950de6cff52727",
+        "sha256_in_prefix": "c2d508c75913a9e8b93d13db6927c2adac7dbfd1371a81876b950de6cff52727",
+        "size_in_bytes": 1899
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/__pycache__/__init__.cpython-314.pyc",
+        "path_type": "hardlink",
+        "sha256": "d3f5002db7a0d7417d8491d34b4bc2d6cd7238ec2a9ebf34c2ffc4d3d74c8a03",
+        "sha256_in_prefix": "d3f5002db7a0d7417d8491d34b4bc2d6cd7238ec2a9ebf34c2ffc4d3d74c8a03",
+        "size_in_bytes": 1002
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/__pycache__/version.cpython-314.pyc",
+        "path_type": "hardlink",
+        "sha256": "d6d1d25381a6dc29f25f3abec8470a1ebde63dc9a071515aa0558bc4fcecb624",
+        "sha256_in_prefix": "d6d1d25381a6dc29f25f3abec8470a1ebde63dc9a071515aa0558bc4fcecb624",
+        "size_in_bytes": 208
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/_xxhash.cpython-314-darwin.so",
+        "path_type": "hardlink",
+        "sha256": "642346682c6e278d9deb9289b2b2a0f42c1abc301ba0432c847783f953c01106",
+        "sha256_in_prefix": "642346682c6e278d9deb9289b2b2a0f42c1abc301ba0432c847783f953c01106",
+        "size_in_bytes": 74992
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/py.typed",
+        "path_type": "hardlink",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sha256_in_prefix": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_in_bytes": 0
+      },
+      {
+        "_path": "lib/python3.14/site-packages/xxhash/version.py",
+        "path_type": "hardlink",
+        "sha256": "98053cffca215cd1a5e4bb58b76c9476e48ac1e12410ad11dd4ffecd95f21cd2",
+        "sha256_in_prefix": "98053cffca215cd1a5e4bb58b76c9476e48ac1e12410ad11dd4ffecd95f21cd2",
+        "size_in_bytes": 101
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "e0cda3e7c3fbe4f0734300613243bf17fd332e7d504338b65857becb5ec6960a",
+  "size": 22456,
+  "subdir": "osx-arm64",
+  "timestamp": 1762516760000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/python-xxhash-3.6.0-py314h8cb506f_1.conda",
+  "version": "3.6.0"
+}

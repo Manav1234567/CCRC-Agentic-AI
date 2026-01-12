@@ -1,0 +1,16 @@
+#libevent pkg-config source file
+
+prefix=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env
+exec_prefix=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env
+libdir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/lib
+includedir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/include
+
+Name: libevent_openssl
+Description: libevent_openssl adds openssl-based TLS support to libevent
+Version: 2.1.12
+Requires: libevent
+Conflicts:
+Libs: -L${libdir} -levent_openssl
+Libs.private:   -L/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/lib/libssl.dylib -L/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/lib/libcrypto.dylib
+Cflags: -I${includedir} 
+

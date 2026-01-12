@@ -1,0 +1,114 @@
+{
+  "build": "h64b956e_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "libre2-11 2025.11.05 h91c62da_0"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/re2-2025.11.05-h64b956e_0",
+  "files": [
+    "include/re2/filtered_re2.h",
+    "include/re2/re2.h",
+    "include/re2/set.h",
+    "include/re2/stringpiece.h",
+    "lib/cmake/re2/re2Config.cmake",
+    "lib/cmake/re2/re2ConfigVersion.cmake",
+    "lib/cmake/re2/re2Targets-release.cmake",
+    "lib/cmake/re2/re2Targets.cmake",
+    "lib/libre2.dylib",
+    "lib/pkgconfig/re2.pc"
+  ],
+  "fn": "re2-2025.11.05-h64b956e_0.conda",
+  "license": "BSD-3-Clause",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/re2-2025.11.05-h64b956e_0",
+    "type": 1
+  },
+  "md5": "1b35e663ed321840af65e7c5cde419f2",
+  "name": "re2",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/re2-2025.11.05-h64b956e_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "include/re2/filtered_re2.h",
+        "path_type": "hardlink",
+        "sha256": "1ea210499ecb637cd0c8ebc5f20d0c3be02697e4aa0f614ebc831812709227f5",
+        "sha256_in_prefix": "1ea210499ecb637cd0c8ebc5f20d0c3be02697e4aa0f614ebc831812709227f5",
+        "size_in_bytes": 4281
+      },
+      {
+        "_path": "include/re2/re2.h",
+        "path_type": "hardlink",
+        "sha256": "59f4d4b5318fcb6acf0c90f17d17e71903a87ec25d75fcf5d13e738beb29490f",
+        "sha256_in_prefix": "59f4d4b5318fcb6acf0c90f17d17e71903a87ec25d75fcf5d13e738beb29490f",
+        "size_in_bytes": 42153
+      },
+      {
+        "_path": "include/re2/set.h",
+        "path_type": "hardlink",
+        "sha256": "d862a0e44570aad753ab7b68ec1c3e34a95075aaf95e50b208b26b894cefd903",
+        "sha256_in_prefix": "d862a0e44570aad753ab7b68ec1c3e34a95075aaf95e50b208b26b894cefd903",
+        "size_in_bytes": 2693
+      },
+      {
+        "_path": "include/re2/stringpiece.h",
+        "path_type": "hardlink",
+        "sha256": "59c1438095decbdab33a6140f6b358634e3dc31c36408ba9ce3b382ab3fb6c5a",
+        "sha256_in_prefix": "59c1438095decbdab33a6140f6b358634e3dc31c36408ba9ce3b382ab3fb6c5a",
+        "size_in_bytes": 504
+      },
+      {
+        "_path": "lib/cmake/re2/re2Config.cmake",
+        "path_type": "hardlink",
+        "sha256": "382134b3768060ad7ccdfe110feb2baac9110ccf0b5f3307d9fb3a147e540d42",
+        "sha256_in_prefix": "382134b3768060ad7ccdfe110feb2baac9110ccf0b5f3307d9fb3a147e540d42",
+        "size_in_bytes": 1382
+      },
+      {
+        "_path": "lib/cmake/re2/re2ConfigVersion.cmake",
+        "path_type": "hardlink",
+        "sha256": "0646009b5688c6b38b691169fc0ed61fa393a9856fae8dcbc14ba2a4992b3792",
+        "sha256_in_prefix": "0646009b5688c6b38b691169fc0ed61fa393a9856fae8dcbc14ba2a4992b3792",
+        "size_in_bytes": 2765
+      },
+      {
+        "_path": "lib/cmake/re2/re2Targets-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "9613749f12397b04bc420003b882f8044e6466ec509f18c84acd68fe1e00d5bb",
+        "sha256_in_prefix": "9613749f12397b04bc420003b882f8044e6466ec509f18c84acd68fe1e00d5bb",
+        "size_in_bytes": 830
+      },
+      {
+        "_path": "lib/cmake/re2/re2Targets.cmake",
+        "path_type": "hardlink",
+        "sha256": "68ef448faefd0ef69ab65420a7f382a5ebf089cb2620b0d60161fe0f2ba750f7",
+        "sha256_in_prefix": "68ef448faefd0ef69ab65420a7f382a5ebf089cb2620b0d60161fe0f2ba750f7",
+        "size_in_bytes": 4424
+      },
+      {
+        "_path": "lib/libre2.dylib",
+        "path_type": "softlink",
+        "sha256": "acf0c4207ea544b68da7a8e5ef8f9f23ecbdf64c830ba53f1821f8dd0ea7e794",
+        "size_in_bytes": 479392
+      },
+      {
+        "_path": "lib/pkgconfig/re2.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/re2-split_1762397635231/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold",
+        "sha256": "ba4623cbde2a8e53a4cd78d22641bcd64def4d226b732583979d3e3bd6677278",
+        "sha256_in_prefix": "ce3a3af218393ed87f7362e5ff0bc201f4fd9cfd648b705bf5ffe591a1e6c3ef",
+        "size_in_bytes": 950
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "29c4bceb6b4530bac6820c30ba5a2f53fd26ed3e7003831ecf394e915b975fbc",
+  "size": 27422,
+  "subdir": "osx-arm64",
+  "timestamp": 1762398340000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/re2-2025.11.05-h64b956e_0.conda",
+  "version": "2025.11.05"
+}

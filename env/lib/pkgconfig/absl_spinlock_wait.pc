@@ -1,0 +1,12 @@
+prefix=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env
+exec_prefix=${prefix}
+libdir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/lib
+includedir=/Users/manavgargh/Documents/data/Work/Research climate/CCRC-Agentic-AI/env/include
+
+Name: absl_spinlock_wait
+Description: Abseil spinlock_wait library
+URL: https://abseil.io/
+Version: 20250512
+Requires: absl_base_internal = 20250512, absl_core_headers = 20250512, absl_errno_saver = 20250512
+Libs: -L${libdir}  -labsl_spinlock_wait 
+Cflags: -I${includedir} -Wno-float-conversion -Wno-implicit-float-conversion -Wno-implicit-int-float-conversion -Wno-unknown-warning-option -DNOMINMAX

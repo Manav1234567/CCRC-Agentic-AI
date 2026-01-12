@@ -1,0 +1,54 @@
+{
+  "build": "h91c62da_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [
+    "re2 2025.11.05.*"
+  ],
+  "depends": [
+    "__osx >=11.0",
+    "libabseil * cxx17*",
+    "libabseil >=20250512.1,<20250513.0a0",
+    "libcxx >=19"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/libre2-11-2025.11.05-h91c62da_0",
+  "files": [
+    "lib/libre2.11.0.0.dylib",
+    "lib/libre2.11.dylib"
+  ],
+  "fn": "libre2-11-2025.11.05-h91c62da_0.conda",
+  "license": "BSD-3-Clause",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/libre2-11-2025.11.05-h91c62da_0",
+    "type": 1
+  },
+  "md5": "060f099756e6baf2ed51b9065e44eda8",
+  "name": "libre2-11",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/libre2-11-2025.11.05-h91c62da_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "lib/libre2.11.0.0.dylib",
+        "path_type": "hardlink",
+        "sha256": "7a994e23b4bfd3468500bcf41cffc82918a92a2459648720dad53018215606df",
+        "sha256_in_prefix": "7a994e23b4bfd3468500bcf41cffc82918a92a2459648720dad53018215606df",
+        "size_in_bytes": 480528
+      },
+      {
+        "_path": "lib/libre2.11.dylib",
+        "path_type": "hardlink",
+        "sha256": "a75cab19f0e2a32d2e0715ca7ceb9a1d278a8909f9815dcdf7c53b235fd607c6",
+        "sha256_in_prefix": "a75cab19f0e2a32d2e0715ca7ceb9a1d278a8909f9815dcdf7c53b235fd607c6",
+        "size_in_bytes": 480512
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "7b525313ab16415c4a3191ccf59157c3a4520ed762c8ec61fcfb81d27daa4723",
+  "size": 165593,
+  "subdir": "osx-arm64",
+  "timestamp": 1762398300000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/libre2-11-2025.11.05-h91c62da_0.conda",
+  "version": "2025.11.05"
+}

@@ -1,0 +1,37 @@
+{
+  "build": "py314he55896b_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "libarrow-acero 22.0.0.*",
+    "libarrow-dataset 22.0.0.*",
+    "libarrow-substrait 22.0.0.*",
+    "libparquet 22.0.0.*",
+    "pyarrow-core 22.0.0 *_0_*",
+    "python >=3.14,<3.15.0a0",
+    "python_abi 3.14.* *_cp314"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/pyarrow-22.0.0-py314he55896b_0",
+  "files": [],
+  "fn": "pyarrow-22.0.0-py314he55896b_0.conda",
+  "license": "Apache-2.0",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/pyarrow-22.0.0-py314he55896b_0",
+    "type": 1
+  },
+  "md5": "27b21816e9427b5bb9f5686c122b8730",
+  "name": "pyarrow",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/pyarrow-22.0.0-py314he55896b_0.conda",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "1c15052ed5cdd0478964ea0b0f73bbc5db1c49f9b6923a378ba4b8dd2d9b802d",
+  "size": 26356,
+  "subdir": "osx-arm64",
+  "timestamp": 1761649037000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/pyarrow-22.0.0-py314he55896b_0.conda",
+  "version": "22.0.0"
+}

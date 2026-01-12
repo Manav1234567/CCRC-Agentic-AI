@@ -1,0 +1,106 @@
+{
+  "build": "h75845d1_6_cpu",
+  "build_number": 6,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "__osx >=11.0",
+    "libabseil * cxx17*",
+    "libabseil >=20250512.1,<20250513.0a0",
+    "libarrow 22.0.0 he6e817a_6_cpu",
+    "libcxx >=19",
+    "libopentelemetry-cpp >=1.21.0,<1.22.0a0",
+    "libprotobuf >=6.31.1,<6.31.2.0a0",
+    "libre2-11 >=2025.8.12",
+    "libutf8proc >=2.11.2,<2.12.0a0",
+    "re2"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/libarrow-compute-22.0.0-h75845d1_6_cpu",
+  "files": [
+    "lib/cmake/ArrowCompute/ArrowComputeConfig.cmake",
+    "lib/cmake/ArrowCompute/ArrowComputeConfigVersion.cmake",
+    "lib/cmake/ArrowCompute/ArrowComputeTargets-release.cmake",
+    "lib/cmake/ArrowCompute/ArrowComputeTargets.cmake",
+    "lib/libarrow_compute.2200.0.0.dylib",
+    "lib/libarrow_compute.2200.dylib",
+    "lib/libarrow_compute.dylib",
+    "lib/pkgconfig/arrow-compute.pc"
+  ],
+  "fn": "libarrow-compute-22.0.0-h75845d1_6_cpu.conda",
+  "license": "Apache-2.0",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/libarrow-compute-22.0.0-h75845d1_6_cpu",
+    "type": 1
+  },
+  "md5": "51b139c330f194379c4271c91c9cd1c7",
+  "name": "libarrow-compute",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/libarrow-compute-22.0.0-h75845d1_6_cpu.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "lib/cmake/ArrowCompute/ArrowComputeConfig.cmake",
+        "path_type": "hardlink",
+        "sha256": "4559752a68fe3113e46ce0aa40898a1cf3b33d6a23a45b0970dd93f157f685e7",
+        "sha256_in_prefix": "4559752a68fe3113e46ce0aa40898a1cf3b33d6a23a45b0970dd93f157f685e7",
+        "size_in_bytes": 2341
+      },
+      {
+        "_path": "lib/cmake/ArrowCompute/ArrowComputeConfigVersion.cmake",
+        "path_type": "hardlink",
+        "sha256": "4a6fefd2d8f9533f9768a3bb6dce52f0b69c6795fde3861b180cdece5eb00d8e",
+        "sha256_in_prefix": "4a6fefd2d8f9533f9768a3bb6dce52f0b69c6795fde3861b180cdece5eb00d8e",
+        "size_in_bytes": 2765
+      },
+      {
+        "_path": "lib/cmake/ArrowCompute/ArrowComputeTargets-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "3e9a48b22a86e39d8c4b4e210cae04f3070de9b639406504ec339a76a2b1cff9",
+        "sha256_in_prefix": "3e9a48b22a86e39d8c4b4e210cae04f3070de9b639406504ec339a76a2b1cff9",
+        "size_in_bytes": 1275
+      },
+      {
+        "_path": "lib/cmake/ArrowCompute/ArrowComputeTargets.cmake",
+        "path_type": "hardlink",
+        "sha256": "edbbf9fd3f3229c3324f2b3db2ea1e2a0dad508c19633f2c21d562c9e349dbe2",
+        "sha256_in_prefix": "edbbf9fd3f3229c3324f2b3db2ea1e2a0dad508c19633f2c21d562c9e349dbe2",
+        "size_in_bytes": 4254
+      },
+      {
+        "_path": "lib/libarrow_compute.2200.0.0.dylib",
+        "path_type": "hardlink",
+        "sha256": "8527723edc534ddfbdf5d9e9f6cf9bb393be2d1a904af0a910d594e2246d66bd",
+        "sha256_in_prefix": "8527723edc534ddfbdf5d9e9f6cf9bb393be2d1a904af0a910d594e2246d66bd",
+        "size_in_bytes": 15013856
+      },
+      {
+        "_path": "lib/libarrow_compute.2200.dylib",
+        "path_type": "softlink",
+        "sha256": "8527723edc534ddfbdf5d9e9f6cf9bb393be2d1a904af0a910d594e2246d66bd",
+        "size_in_bytes": 15013856
+      },
+      {
+        "_path": "lib/libarrow_compute.dylib",
+        "path_type": "softlink",
+        "sha256": "8527723edc534ddfbdf5d9e9f6cf9bb393be2d1a904af0a910d594e2246d66bd",
+        "size_in_bytes": 15013856
+      },
+      {
+        "_path": "lib/pkgconfig/arrow-compute.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/apache-arrow_1765376330899/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placeh",
+        "sha256": "8b75314ee76a0d5875f8010b9fed4fb9bb2ef9132fd1e3f98e7287d77f71f815",
+        "sha256_in_prefix": "a6736c87ec2645dff2146a54c5f2d249f37fd6ba2a4a9d7b7097c5a3d0ad4ecd",
+        "size_in_bytes": 1270
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "053d096e77464ea8da7c35ab167864bacac3590af304aa3368d09aba8cdf8af8",
+  "size": 2155806,
+  "subdir": "osx-arm64",
+  "timestamp": 1765382724000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/libarrow-compute-22.0.0-h75845d1_6_cpu.conda",
+  "version": "22.0.0"
+}

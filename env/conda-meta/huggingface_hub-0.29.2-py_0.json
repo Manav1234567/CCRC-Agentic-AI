@@ -1,0 +1,68 @@
+{
+  "build": "py_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/huggingface/noarch",
+  "constrains": [],
+  "depends": [
+    "filelock",
+    "packaging",
+    "pip",
+    "python",
+    "pyyaml",
+    "requests",
+    "tqdm",
+    "typing-extensions"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/huggingface_hub-0.29.2-py_0",
+  "files": [
+    "bin/huggingface-cli",
+    "lib/python3.14/site-packages/huggingface_hub-0.29.2-py3.8.egg",
+    "lib/python3.14/site-packages/huggingface_hub.pth"
+  ],
+  "fn": "huggingface_hub-0.29.2-py_0.tar.bz2",
+  "license": "Apache License 2.0",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/huggingface_hub-0.29.2-py_0",
+    "type": 1
+  },
+  "md5": "778472fb5d4f2dfc35b7e2e9c1c21379",
+  "name": "huggingface_hub",
+  "noarch": "python",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/huggingface_hub-0.29.2-py_0.tar.bz2",
+  "package_type": "noarch_python",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "python-scripts/huggingface-cli",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/usr/share/miniconda/envs/build-hub/conda-bld/huggingface_hub_1741180936884/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_pl",
+        "sha256": "6d72913641dd3dea3c01db712eca5a37728c2b78a219da3c9bae111d1ee58765",
+        "sha256_in_prefix": "1510a760cce9a402c9e48551f255afc0285eadb7f175087f0ce458886a62d9f3",
+        "size_in_bytes": 1251
+      },
+      {
+        "_path": "site-packages/huggingface_hub-0.29.2-py3.8.egg",
+        "path_type": "hardlink",
+        "sha256": "210b5fc3e37c4363611f7d3271f48716f4ba9f888347a8db20875ec6588e9b51",
+        "sha256_in_prefix": "210b5fc3e37c4363611f7d3271f48716f4ba9f888347a8db20875ec6588e9b51",
+        "size_in_bytes": 459566
+      },
+      {
+        "_path": "site-packages/huggingface_hub.pth",
+        "path_type": "hardlink",
+        "sha256": "a610689f27fbee685a026d4eac5a57ddfaf326acd2680e65058b20a7e1ac3d4e",
+        "sha256_in_prefix": "a610689f27fbee685a026d4eac5a57ddfaf326acd2680e65058b20a7e1ac3d4e",
+        "size_in_bytes": 35
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "d2610b97129cd7f819665df830fe9b61aadec7cd1cb08cb7375d5d8e2dda2596",
+  "size": 457885,
+  "subdir": "noarch",
+  "timestamp": 1741180951000,
+  "url": "https://conda.anaconda.org/huggingface/noarch/huggingface_hub-0.29.2-py_0.tar.bz2",
+  "version": "0.29.2"
+}

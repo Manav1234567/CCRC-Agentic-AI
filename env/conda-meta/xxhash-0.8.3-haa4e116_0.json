@@ -1,0 +1,161 @@
+{
+  "build": "haa4e116_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "__osx >=11.0"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/xxhash-0.8.3-haa4e116_0",
+  "files": [
+    "bin/xxh128sum",
+    "bin/xxh32sum",
+    "bin/xxh3sum",
+    "bin/xxh64sum",
+    "bin/xxhsum",
+    "include/xxh3.h",
+    "include/xxhash.h",
+    "lib/libxxhash.0.8.3.dylib",
+    "lib/libxxhash.0.dylib",
+    "lib/libxxhash.a",
+    "lib/libxxhash.dylib",
+    "lib/pkgconfig/libxxhash.pc",
+    "share/man/man1/xxh128sum.1",
+    "share/man/man1/xxh32sum.1",
+    "share/man/man1/xxh3sum.1",
+    "share/man/man1/xxh64sum.1",
+    "share/man/man1/xxhsum.1"
+  ],
+  "fn": "xxhash-0.8.3-haa4e116_0.conda",
+  "license": "BSD-2-Clause",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/xxhash-0.8.3-haa4e116_0",
+    "type": 1
+  },
+  "md5": "54a24201d62fc17c73523e4b86f71ae8",
+  "name": "xxhash",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/xxhash-0.8.3-haa4e116_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "bin/xxh128sum",
+        "path_type": "softlink",
+        "sha256": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "size_in_bytes": 108496
+      },
+      {
+        "_path": "bin/xxh32sum",
+        "path_type": "softlink",
+        "sha256": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "size_in_bytes": 108496
+      },
+      {
+        "_path": "bin/xxh3sum",
+        "path_type": "softlink",
+        "sha256": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "size_in_bytes": 108496
+      },
+      {
+        "_path": "bin/xxh64sum",
+        "path_type": "softlink",
+        "sha256": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "size_in_bytes": 108496
+      },
+      {
+        "_path": "bin/xxhsum",
+        "path_type": "hardlink",
+        "sha256": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "sha256_in_prefix": "04fb6d650e668b3ca3de5115556530a3e2f271d720f4da1d2dc438b0369b2a75",
+        "size_in_bytes": 108496
+      },
+      {
+        "_path": "include/xxh3.h",
+        "path_type": "hardlink",
+        "sha256": "a927ee0e6e0800835baed52b16bc981ec39f46287271a1a3f77c22cc48634430",
+        "sha256_in_prefix": "a927ee0e6e0800835baed52b16bc981ec39f46287271a1a3f77c22cc48634430",
+        "size_in_bytes": 2394
+      },
+      {
+        "_path": "include/xxhash.h",
+        "path_type": "hardlink",
+        "sha256": "17973c0dc49d9854ca26caa191f0e12f7a424b68858d9a78de3860d959d85e4b",
+        "sha256_in_prefix": "17973c0dc49d9854ca26caa191f0e12f7a424b68858d9a78de3860d959d85e4b",
+        "size_in_bytes": 268319
+      },
+      {
+        "_path": "lib/libxxhash.0.8.3.dylib",
+        "path_type": "hardlink",
+        "sha256": "4231216ea477f6be99c0f1b014c99f8a97188e590decd4641606e18d84a410f2",
+        "sha256_in_prefix": "4231216ea477f6be99c0f1b014c99f8a97188e590decd4641606e18d84a410f2",
+        "size_in_bytes": 70976
+      },
+      {
+        "_path": "lib/libxxhash.0.dylib",
+        "path_type": "softlink",
+        "sha256": "4231216ea477f6be99c0f1b014c99f8a97188e590decd4641606e18d84a410f2",
+        "size_in_bytes": 70976
+      },
+      {
+        "_path": "lib/libxxhash.a",
+        "path_type": "hardlink",
+        "sha256": "201c82f3cabbfcd09f69f3d5054d8ad353d84ff627fef10e02b38cf5402c73cd",
+        "sha256_in_prefix": "201c82f3cabbfcd09f69f3d5054d8ad353d84ff627fef10e02b38cf5402c73cd",
+        "size_in_bytes": 40624
+      },
+      {
+        "_path": "lib/libxxhash.dylib",
+        "path_type": "softlink",
+        "sha256": "4231216ea477f6be99c0f1b014c99f8a97188e590decd4641606e18d84a410f2",
+        "size_in_bytes": 70976
+      },
+      {
+        "_path": "lib/pkgconfig/libxxhash.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/xxhash_1746457606546/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_pl",
+        "sha256": "b46eac75d077fec5d7d6dba96d813afd862abba2737bd4084b1eea2c624f56f3",
+        "sha256_in_prefix": "6971512a656b446546295dfdcd688902137885d0587d331285ca48f7e8b2c7a2",
+        "size_in_bytes": 665
+      },
+      {
+        "_path": "share/man/man1/xxh128sum.1",
+        "path_type": "softlink",
+        "sha256": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "size_in_bytes": 4846
+      },
+      {
+        "_path": "share/man/man1/xxh32sum.1",
+        "path_type": "softlink",
+        "sha256": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "size_in_bytes": 4846
+      },
+      {
+        "_path": "share/man/man1/xxh3sum.1",
+        "path_type": "softlink",
+        "sha256": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "size_in_bytes": 4846
+      },
+      {
+        "_path": "share/man/man1/xxh64sum.1",
+        "path_type": "softlink",
+        "sha256": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "size_in_bytes": 4846
+      },
+      {
+        "_path": "share/man/man1/xxhsum.1",
+        "path_type": "hardlink",
+        "sha256": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "sha256_in_prefix": "0be3f6c23d94c765a09af9d61ed305fcf4705a18da7f1a4e7b2c5b12cb50f481",
+        "size_in_bytes": 4846
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "5e2e58fbaa00eeab721a86cb163a54023b3b260e91293dde7e5334962c5c96e3",
+  "size": 98913,
+  "subdir": "osx-arm64",
+  "timestamp": 1746457827000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/xxhash-0.8.3-haa4e116_0.conda",
+  "version": "0.8.3"
+}

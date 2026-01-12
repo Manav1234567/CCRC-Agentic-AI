@@ -1,0 +1,59 @@
+{
+  "build": "hba2cd1d_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [
+    "icu <0.0a0"
+  ],
+  "depends": [
+    "__osx >=11.0",
+    "libiconv >=1.18,<2.0a0",
+    "liblzma >=5.8.1,<6.0a0",
+    "libxml2-16 2.15.1 h8eac4d7_0",
+    "libzlib >=1.3.1,<2.0a0"
+  ],
+  "extracted_package_dir": "/opt/anaconda3/pkgs/libxml2-2.15.1-hba2cd1d_0",
+  "files": [
+    "bin/xmlcatalog",
+    "bin/xmllint"
+  ],
+  "fn": "libxml2-2.15.1-hba2cd1d_0.conda",
+  "license": "MIT",
+  "link": {
+    "source": "/opt/anaconda3/pkgs/libxml2-2.15.1-hba2cd1d_0",
+    "type": 1
+  },
+  "md5": "a53d5f7fff38853ddb6bdc8fb609c039",
+  "name": "libxml2",
+  "package_tarball_full_path": "/opt/anaconda3/pkgs/libxml2-2.15.1-hba2cd1d_0.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "bin/xmlcatalog",
+        "file_mode": "binary",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/libxml2-split_1761015594917/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_place",
+        "sha256": "08968643321e5045cae3d09f956974813f10f7f73d6bf7d2a03e3b9ade409603",
+        "sha256_in_prefix": "9b259bea9543f579f5c47d8b00ed18c97f03a16cac26ee49ff1da1a2a4f53d62",
+        "size_in_bytes": 53728
+      },
+      {
+        "_path": "bin/xmllint",
+        "file_mode": "binary",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/Users/runner/miniforge3/conda-bld/libxml2-split_1761015594917/_h_env_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_placehold_place",
+        "sha256": "564b5fb78caf2c315b6459f9d2b53c145d7f4617de52c10cfa7ace7d55b26305",
+        "sha256_in_prefix": "cb0837243283d8cf4bb6a1b5ca93e3f9cdc20d9eedf8d9db73650ac1f73f3682",
+        "size_in_bytes": 116368
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "fa01101fe7d95085846c16825f0e7dc0efe1f1c7438a96fe7395c885d6179495",
+  "size": 40611,
+  "subdir": "osx-arm64",
+  "timestamp": 1761016283000,
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/libxml2-2.15.1-hba2cd1d_0.conda",
+  "version": "2.15.1"
+}
