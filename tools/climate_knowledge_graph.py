@@ -37,171 +37,265 @@ class Tools:
         except Exception as e:
             return f"Error generating embedding: {e}"
 
-    def search_climate_papers(self, query: str) -> str:
-        """
-        Search the Neo4j Knowledge Graph for research papers, authors, and climate data.
-        Returns a formatted text block with grouped sources and chunk-level IDs (e.g. 1a, 1b).
-        """
-        print(f"🔍 Graph Tool Triggered: {query}")
+    def _format_doc_meta(self, doc, index):
+        """Return a small metadata string for a document (used in final output)."""
+        title = doc.get("title", "Unknown Title")
+        authors = doc.get("author_list") or doc.get("authors") or []
+        publishers = doc.get("publisher_list") or doc.get("publishers") or []
+        year = doc.get("year")
+        full_date = doc.get("full_date")
+        parts = [f"[{index}] {title}"]
+        if authors:
+            parts.append(f"AUTHORS: {', '.join(authors)}")
+        if publishers:
+            parts.append(f"PUBLISHERS: {', '.join(publishers)}")
+        if full_date:
+            parts.append(f"DATE: {full_date}")
+        elif year:
+            parts.append(f"YEAR: {year}")
+        if doc.get("source_url"):
+            parts.append(f"SOURCE_URL: {doc.get('source_url')}")
+        return "\n".join(parts)
 
-        # 1. Connect to DB
+    def search_documents(self, query: str, top_k: int = 5) -> str:
+        """
+        Document-level retrieval ONLY (document_vector_index).
+        Returns either:
+        - A short machine-friendly list of docs (one line per doc) with a stable doc_id property, or
+        - The exact string 'NONE_FOUND' if nothing reliable was matched.
+        LLM usage pattern: call this first when the user mentions a title/author/year/publisher specifically.
+        """
         try:
             driver = GraphDatabase.driver(
                 self.valves.NEO4J_URI,
                 auth=(self.valves.NEO4J_USER, self.valves.NEO4J_PASSWORD),
             )
         except Exception as e:
-            return f"Connection Failed: {e}"
+            return f"ERROR: Connection Failed: {e}"
 
-        # 2. Get Vector
-        vector = self._get_embedding(query)
-        if isinstance(vector, str):
-            return vector
+        vec = self._get_embedding(query)
+        if isinstance(vec, str):
+            return vec  # error string
 
         try:
             with driver.session() as session:
-                # --- A. VECTOR SEARCH ---
-                vec_query = """
-                CALL db.index.vector.queryNodes('chunk_vector_index', 6, $vec) 
-                YIELD node AS chunk, score
-                MATCH (doc:Document)-[:HAS_CHUNK]->(chunk)
-                RETURN doc, chunk, score
+                q = """
+                CALL db.index.vector.queryNodes('document_vector_index', $k, $vec)
+                YIELD node AS doc, score
+                RETURN doc, score
                 """
-                vec_res = session.run(vec_query, vec=vector).data()
+                rows = session.run(q, k=top_k, vec=vec).data()
 
-                # --- B. KEYWORD SEARCH ---
-                kw_query = """
-                MATCH (doc:Document)-[:HAS_CHUNK]->(chunk)
-                WHERE 
-                    any(a IN doc.author_list WHERE toLower(a) CONTAINS toLower($q)) OR 
-                    any(p IN doc.publisher_list WHERE toLower(p) CONTAINS toLower($q)) OR
-                    toLower(doc.title) CONTAINS toLower($q)
-                RETURN doc, chunk, 1.0 as score
-                LIMIT 6
-                """
-                kw_res = session.run(kw_query, q=query).data()
+                if not rows:
+                    return "NONE_FOUND"
 
-                # --- C. DEDUPLICATE & SORT ---
-                seen_chunk_ids = set()
-                combined = []
-                for r in vec_res + kw_res:
-                    # chunk may be a dict-like object
-                    chunk = r.get("chunk", {})
-                    # ensure stable chunk id (fallback to hash of text)
-                    chunk_id = chunk.get("id") or chunk.get("chunk_id") or str(abs(hash(chunk.get("text", "") )) )
-                    if chunk_id not in seen_chunk_ids:
-                        seen_chunk_ids.add(chunk_id)
-                        combined.append(r)
-
-                # Sort by score and limit total chunks
-                combined = sorted(combined, key=lambda x: x.get("score", 0), reverse=True)[:12]
-
-                if not combined:
-                    return "No relevant documents found."
-
-                # --- D. GROUP BY DOCUMENT ---
-                docs = {}  # key -> {"doc": doc_obj, "chunks": [ {chunk, score, chunk_id} ] }
-                order_of_docs = []  # preserve order encountered
-                for r in combined:
-                    doc = r["doc"]
-                    chunk = r["chunk"]
-                    score = r.get("score", 0)
-
-                    # stable doc key - prefer doc.id if present, else title hash
-                    doc_key = doc.get("id") or doc.get("doc_id") or doc.get("title", "")[:80] + f"_{abs(hash(doc.get('title','')))}"
-                    if doc_key not in docs:
-                        docs[doc_key] = {"doc": doc, "chunks": []}
-                        order_of_docs.append(doc_key)
-
-                    chunk_id = chunk.get("id") or chunk.get("chunk_id") or str(abs(hash(chunk.get("text", ""))))
-                    docs[doc_key]["chunks"].append({"chunk": chunk, "score": score, "chunk_id": chunk_id})
-
-                # --- E. BUILD FORMATTED OUTPUT (INLINE SUMMARY + EXPANDABLE SOURCES) ---
+                # If top score is extremely low consider NONE_FOUND -- but keep simple: return rows
                 out_lines = []
-                out_lines.append(f"Query: {query}")
-                out_lines.append("")
-                out_lines.append("Top matched documents and chunk previews:")
-                out_lines.append("")
-
-                # top summary list with doc index and chunk-letter previews
-                for d_idx, doc_key in enumerate(order_of_docs, start=1):
-                    doc = docs[doc_key]["doc"]
-                    chunks = docs[doc_key]["chunks"]
-
-                    # Citation ref (author/publisher/title)
-                    title = doc.get("title", "Unknown Title")
-                    authors = doc.get("author_list", []) or []
-                    publishers = doc.get("publisher_list", []) or []
-                    year = doc.get("year")
-                    cite_year = f" ({year})" if year else ""
-                    if authors:
-                        primary = authors[0].split()[-1]
-                        cite_name = f"{primary} et al." if len(authors) > 1 else primary
-                        citation_ref = f"{cite_name}{cite_year}"
-                    elif publishers:
-                        citation_ref = f"{publishers[0]}{cite_year}"
-                    else:
-                        citation_ref = f"{title[:30]}...{cite_year}"
-
-                    out_lines.append(f"[{d_idx}] {title} — {citation_ref}")
-
-                    # list chunk previews
-                    for c_i, ch in enumerate(chunks):
-                        letter = chr(ord("a") + c_i)
-                        text = (ch["chunk"].get("text") or "").replace("\n", " ").strip()
-                        preview = (text[:120] + "...") if len(text) > 120 else text
-                        out_lines.append(f"  - [{d_idx}{letter}] {preview}")
-                    out_lines.append("")
-
-                # --- F. DETAILED SOURCES (click-to-expand using HTML <details>) ---
-                out_lines.append("\n-----\nSOURCES (Exact Text):\n")
-                for d_idx, doc_key in enumerate(order_of_docs, start=1):
-                    doc = docs[doc_key]["doc"]
-                    chunks = docs[doc_key]["chunks"]
-
-                    title = doc.get("title", "Unknown Title")
-                    authors = doc.get("author_list", []) or []
-                    publishers = doc.get("publisher_list", []) or []
-                    year = doc.get("year")
-                    full_date = doc.get("full_date")
-                    cite_year = f" ({year})" if year else ""
-                    if authors:
-                        primary = authors[0].split()[-1]
-                        cite_name = f"{primary} et al." if len(authors) > 1 else primary
-                        citation_ref = f"{cite_name}{cite_year}"
-                    elif publishers:
-                        citation_ref = f"{publishers[0]}{cite_year}"
-                    else:
-                        citation_ref = f"{title[:30]}...{cite_year}"
-
-                    # Document header
-                    out_lines.append(f"### [{d_idx}] {title}")
-                    out_lines.append(f"CITATION_REF: {citation_ref}")
-                    if full_date:
-                        out_lines.append(f"DATE: {full_date}")
-                    elif year:
-                        out_lines.append(f"YEAR: {year}")
-
-                    if authors:
-                        out_lines.append(f"AUTHORS: {', '.join(authors)}")
-                    if publishers:
-                        out_lines.append(f"PUBLISHERS: {', '.join(publishers)}")
-                    out_lines.append("")
-
-                    # chunk details using <details> tags so UI can expand
-                    for c_i, ch in enumerate(chunks):
-                        letter = chr(ord("a") + c_i)
-                        chunk_text = (ch["chunk"].get("text") or "").strip()
-                        chunk_preview = (chunk_text.replace("\n", " ")[:140] + "...") if len(chunk_text) > 140 else chunk_text
-                        # Use an HTML details block (many markdown renderers support this)
-                        out_lines.append(f"\n\n-----\n[{d_idx}{letter}]\n-----\n{chunk_text}\n\n")
-
-                    out_lines.append("\n")  # space between docs
-
+                for r in rows:
+                    doc = r["doc"]
+                    score = r.get("score", 0)
+                    # Ensure a stable id for later scoping; prefer doc.id/doc_id/title fallback
+                    stable_id = doc.get("id") or doc.get("doc_id") or None
+                    # Compose one-line record: STABLE_ID || SCORE || TITLE || AUTHORS || YEAR
+                    title = doc.get("title", "").replace("\n", " ").strip()
+                    authors = doc.get("author_list") or doc.get("authors") or []
+                    year = doc.get("year") or ""
+                    out_lines.append(
+                        json.dumps(
+                            {
+                                "stable_id": stable_id,
+                                "score": score,
+                                "title": title,
+                                "authors": authors,
+                                "year": year,
+                            },
+                            ensure_ascii=False,
+                        )
+                    )
                 return "\n".join(out_lines)
 
         except Exception as e:
-            return f"Graph Search Error: {e}"
+            return f"ERROR: Doc search failed: {e}"
+        finally:
+            try:
+                driver.close()
+            except:
+                pass
+
+    def get_chunks_for_docs(
+        self,
+        doc_ids: list,
+        query: str = None,
+        max_chunks: int = 5,
+        max_chars: int = 1200,
+    ) -> str:
+        """
+        Given a list of document stable_ids (strings), retrieve up to max_chunks from those documents.
+        If a doc_id is None or no doc-level property exists, we will attempt matching by title if query provides one.
+        Output format (final): a single text block that the LLM can append to its answer.
+        Format:
+        ---
+        [Doc metadata blocks]
+        1a) <chunk text truncated>
+        1b) <chunk text truncated>
+        2a) ...
+        Notes: each chunk is truncated to max_chars to respect token budget.
+        """
+        if not doc_ids:
+            return "NO_DOC_IDS_PROVIDED"
+
+        try:
+            driver = GraphDatabase.driver(
+                self.valves.NEO4J_URI,
+                auth=(self.valves.NEO4J_USER, self.valves.NEO4J_PASSWORD),
+            )
+        except Exception as e:
+            return f"ERROR: Connection Failed: {e}"
+
+        # sanitise doc_ids (list)
+        doc_ids = [d for d in doc_ids if d]
+
+        try:
+            with driver.session() as session:
+                # Build a simple Cypher that matches documents by id/doc_id or title in provided list
+                # We will collect chunks from those docs, limit total to max_chunks (across all docs).
+                # Prefer an index backed lookup; this query uses a MATCH rather than vector.queryNodes because docs are already known.
+                q = """
+                UNWIND $doc_ids AS did
+                MATCH (doc:Document)
+                WHERE doc.id = did OR doc.doc_id = did OR doc.title = did
+                WITH doc
+                MATCH (doc)-[:HAS_CHUNK]->(chunk)
+                RETURN doc, chunk
+                LIMIT $limit
+                """
+                rows = session.run(q, doc_ids=doc_ids, limit=max_chunks).data()
+
+                if not rows:
+                    return "NO_CHUNKS_FOUND"
+
+                # group by doc
+                docs = {}
+                for r in rows:
+                    doc = r["doc"]
+                    chunk = r["chunk"]
+                    doc_key = (
+                        doc.get("id")
+                        or doc.get("doc_id")
+                        or doc.get("title")
+                        or str(abs(hash(doc.get("title", ""))))
+                    )
+                    if doc_key not in docs:
+                        docs[doc_key] = {"doc": doc, "chunks": []}
+                    docs[doc_key]["chunks"].append(chunk)
+
+                # produce final compact output
+                out = []
+                out.append("---")
+                # Document metadata blocks (numbered)
+                for d_index, (doc_key, payload) in enumerate(docs.items(), start=1):
+                    out.append(self._format_doc_meta(payload["doc"], d_index))
+                    # list up to max_chunks_per_doc but overall we'll cap below
+                # Now produce chunk numbering and texts; iterate docs in same order
+                chunk_count = 0
+                for d_index, (doc_key, payload) in enumerate(docs.items(), start=1):
+                    for c_i, ch in enumerate(payload["chunks"]):
+                        if chunk_count >= max_chunks:
+                            break
+                        chunk_count += 1
+                        letter = chr(ord("a") + (c_i % 26))
+                        label = f"{d_index}{letter}"
+                        text = (ch.get("text") or ch.get("content") or "").strip()
+                        # Truncate to max_chars (not tokens) safely
+                        if len(text) > max_chars:
+                            text = text[: max_chars - 3].rsplit(" ", 1)[0] + "..."
+                        out.append(f"{label}) {text}")
+                    if chunk_count >= max_chunks:
+                        break
+
+                return "\n".join(out)
+
+        except Exception as e:
+            return f"ERROR: Chunk retrieval failed: {e}"
+        finally:
+            try:
+                driver.close()
+            except:
+                pass
+
+    def search_climate_chunks(
+        self, query: str, max_chunks: int = 5, max_chars: int = 1200
+    ) -> str:
+        """
+        Direct chunk-level nearest neighbor retrieval (no doc pass).
+        Returns final block formatted like get_chunks_for_docs.
+        Use this when the user query is generic and doesn't request a specific title/author/publisher.
+        """
+        try:
+            driver = GraphDatabase.driver(
+                self.valves.NEO4J_URI,
+                auth=(self.valves.NEO4J_USER, self.valves.NEO4J_PASSWORD),
+            )
+        except Exception as e:
+            return f"ERROR: Connection Failed: {e}"
+
+        vec = self._get_embedding(query)
+        if isinstance(vec, str):
+            return vec
+
+        try:
+            with driver.session() as session:
+                q = """
+                CALL db.index.vector.queryNodes('chunk_vector_index', $k, $vec)
+                YIELD node AS chunk, score
+                MATCH (doc:Document)-[:HAS_CHUNK]->(chunk)
+                RETURN doc, chunk, score
+                LIMIT $limit
+                """
+                rows = session.run(q, k=max_chunks, vec=vec, limit=max_chunks).data()
+                if not rows:
+                    return "NO_CHUNKS_FOUND"
+
+                # group by doc
+                docs = {}
+                for r in rows:
+                    doc = r["doc"]
+                    chunk = r["chunk"]
+                    doc_key = (
+                        doc.get("id")
+                        or doc.get("doc_id")
+                        or doc.get("title")
+                        or str(abs(hash(doc.get("title", ""))))
+                    )
+                    if doc_key not in docs:
+                        docs[doc_key] = {"doc": doc, "chunks": []}
+                    docs[doc_key]["chunks"].append(chunk)
+
+                # format the same as get_chunks_for_docs
+                out = []
+                out.append("---")
+                for d_index, (doc_key, payload) in enumerate(docs.items(), start=1):
+                    out.append(self._format_doc_meta(payload["doc"], d_index))
+
+                chunk_count = 0
+                for d_index, (doc_key, payload) in enumerate(docs.items(), start=1):
+                    for c_i, ch in enumerate(payload["chunks"]):
+                        if chunk_count >= max_chunks:
+                            break
+                        chunk_count += 1
+                        letter = chr(ord("a") + (c_i % 26))
+                        label = f"{d_index}{letter}"
+                        text = (ch.get("text") or ch.get("content") or "").strip()
+                        if len(text) > max_chars:
+                            text = text[: max_chars - 3].rsplit(" ", 1)[0] + "..."
+                        out.append(f"{label}) {text}")
+                    if chunk_count >= max_chunks:
+                        break
+
+                return "\n".join(out)
+
+        except Exception as e:
+            return f"ERROR: Chunk vector search failed: {e}"
         finally:
             try:
                 driver.close()
