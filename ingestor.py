@@ -1,5 +1,3 @@
-# filename: climate_backend.py
-
 import os
 import uuid
 import io
@@ -7,7 +5,7 @@ import scrapy
 import hashlib
 import logging
 import requests
-from multiprocessing import Process
+from multiprocessing import Process, Value
 from urllib.parse import urlparse
 from pathlib import Path
 import json
@@ -23,189 +21,11 @@ from scrapy.utils.project import get_project_settings
 from langchain_unstructured import UnstructuredLoader
 from langchain_core.documents import Document
 
-# Neo4j Imports
-from neo4j import GraphDatabase
-
 # Mute Logging
 logging.getLogger('scrapy').setLevel(logging.WARNING)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 
-class Neo4jManager:
-    def __init__(self, uri, user, password):
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
-
-    def close(self):
-        self.driver.close()
-
-    def check_connection(self):
-        try:
-            with self.driver.session() as session:
-                result = session.run("RETURN 'Connection Successful' AS msg")
-                return result.single()["msg"]
-        except Exception as e:
-            return f"Connection Failed: {e}"
-
-    def setup_constraints(self):
-        """Initializes all unique constraints for the Graph."""
-        with self.driver.session() as session:
-            # Content Hash: The ultimate ID for a document's content
-            session.run("CREATE CONSTRAINT doc_hash IF NOT EXISTS FOR (d:Document) REQUIRE d.hash IS UNIQUE")
-            # File Path: Prevents the same path being indexed twice
-            session.run("CREATE CONSTRAINT doc_path IF NOT EXISTS FOR (d:Document) REQUIRE d.path IS UNIQUE")
-            # Chunk ID: Unique identifier for text segments
-            session.run("CREATE CONSTRAINT chunk_id IF NOT EXISTS FOR (c:Chunk) REQUIRE c.id IS UNIQUE")
-            print("✅ All Constraints (Hash, Path, Chunk) initialized.")
-        
-    def get_processed_hashes(self):
-        """Returns a set of all content hashes already in the DB."""
-        with self.driver.session() as session:
-            result = session.run("MATCH (d:Document) RETURN d.hash AS hash")
-            return {record["hash"] for record in result}
-        
-    def is_hash_present(self, file_hash):
-        """
-        Fast Boolean check if a Document with this hash exists.
-        Used to prevent re-embedding the same file from different sources.
-        """
-        with self.driver.session() as session:
-            # We match strictly on the hash property
-            query = "MATCH (d:Document {hash: $h}) RETURN count(d) > 0 as exists"
-            result = session.run(query, h=file_hash).single()
-            return result["exists"] if result else False
-        
-    def clear_data(self):
-        """
-        Deletes all nodes and relationships. 
-        Note: This keeps your constraints and indexes intact.
-        """
-        with self.driver.session() as session:
-            # DETACH DELETE removes the node AND any relationships connected to it
-            result = session.run("MATCH (n) DETACH DELETE n")
-            summary = result.consume()
-            print(f"🧹 Data Cleared: Deleted {summary.counters.nodes_deleted} nodes "
-                  f"and {summary.counters.relationships_deleted} relationships.")
-
-    def clear_schema(self):
-        """
-        Removes all constraints and indexes from the database.
-        """
-        with self.driver.session() as session:
-            # 1. Get all constraints
-            constraints = session.run("SHOW CONSTRAINTS")
-            for record in constraints:
-                session.run(f"DROP CONSTRAINT {record['name']}")
-            
-            # 2. Get all indexes
-            indexes = session.run("SHOW INDEXES")
-            for record in indexes:
-                # We skip lookup indexes which are system-managed
-                if record['type'] != 'LOOKUP':
-                    session.run(f"DROP INDEX {record['name']}")
-                    
-            print("🧱 Schema Cleared: All constraints and indexes removed.")
-
-    def get_all_embedded_urls(self):
-        """
-        Returns a list of all URLs currently stored as WebPage nodes.
-        """
-        with self.driver.session() as session:
-            result = session.run("MATCH (p:WebPage) RETURN p.url AS url ORDER BY p.url")
-            urls = [record["url"] for record in result]
-            print(f"📋 Found {len(urls)} embedded web pages.")
-            return urls
-
-    def delete_domain_data(self, domain):
-        """
-        Deletes ALL WebPage nodes and their Chunks for a specific domain.
-        Example: domain="docs.python.org" removes all pages from that site.
-        """
-        print(f"🔥 Deleting all data for domain: {domain}...")
-        with self.driver.session() as session:
-            # We match by the 'domain' property we will store on the WebPage node
-            query = """
-            MATCH (p:WebPage {domain: $domain})
-            OPTIONAL MATCH (p)-[:HAS_CHUNK]->(c:Chunk)
-            DETACH DELETE p, c
-            """
-            result = session.run(query, domain=domain)
-            summary = result.consume()
-            print(f"   🗑️ Deleted {summary.counters.nodes_deleted} nodes (Pages + Chunks).")
-
-    def hard_reset(self):
-        """Wipes both data and schema for a completely fresh start."""
-        self.clear_data()
-        self.clear_schema()
-        print("☢️  Hard Reset Complete: The database is now empty and has no rules.")
-
-    def get_all_publishers(self):
-        """
-        Returns a sorted list of all unique Publishers in the Knowledge Graph.
-        """
-        with self.driver.session() as session:
-            # Match all Publisher nodes and return their 'name' property
-            query = """
-            MATCH (p:Publisher) 
-            RETURN p.name AS name 
-            ORDER BY name ASC
-            """
-            result = session.run(query)
-            
-            # Extract names from the result records
-            publishers = [record["name"] for record in result]
-            
-            print(f"📚 Found {len(publishers)} unique publishers.")
-            return publishers
-
-    def build_graph_relationships(self):
-        """
-        Runs post-processing to link Documents to shared Entities (Authors, Publishers, Years).
-        This creates the 'Knowledge Graph' structure where paths form between papers.
-        """
-        with self.driver.session() as session:
-            print("🔗 Starting Graph Linking Phase...")
-
-            # 1. Unify Authors (Merge "Smith" from Paper A and "Smith" from Paper B)
-            # Result: (Author)-[:WROTE]->(Document)
-            print("   ...Unifying Author Nodes")
-            session.run("""
-            MATCH (d:Document) WHERE d.author_list IS NOT NULL
-            UNWIND d.author_list AS name
-            WITH d, trim(name) AS cleaned_name
-            WHERE size(cleaned_name) > 1  // Skip empty/garbage names
-            MERGE (a:Author {name: cleaned_name})
-            MERGE (a)-[:WROTE]->(d)
-            """)
-
-            # 2. Unify Publishers (Merge "CSIRO" from multiple reports)
-            # Result: (Publisher)-[:PUBLISHED]->(Document)
-            print("   ...Unifying Publisher Nodes")
-            session.run("""
-            MATCH (d:Document) WHERE d.publisher_list IS NOT NULL
-            UNWIND d.publisher_list AS pub_name
-            WITH d, trim(pub_name) AS cleaned_pub
-            WHERE size(cleaned_pub) > 1
-            MERGE (p:Publisher {name: cleaned_pub})
-            MERGE (p)-[:PUBLISHED]->(d)
-            """)
-
-            # 3. Time Hierarchy (Connect Documents to common Year Nodes)
-            # Result: (Document)-[:PUBLISHED_IN]->(Year)
-            # This allows queries like: "Match all papers connected to Year 2024"
-            print("   ...Building Time Hierarchy")
-            session.run("""
-            MATCH (d:Document) 
-            WHERE d.year IS NOT NULL AND d.year <> 0
-            
-            // FIX: Force year to be an Integer to ensure "2024" connects to 2024
-            WITH d, toInteger(d.year) as year_val
-            
-            MERGE (y:Year {val: year_val})
-            MERGE (d)-[:PUBLISHED_IN]->(y)
-            """)
-
-        print("🚀 Graph connections complete.")
-   
 
 def store_in_neo4j(db_manager, file_info, chunks, vectors, doc_vector):
     """
@@ -277,7 +97,7 @@ def store_in_neo4j(db_manager, file_info, chunks, vectors, doc_vector):
             doc_vec=doc_vector, 
             chunk_data=chunk_data
         )
-    print(f"✅ Stored & Linked: '{file_info.get('title')}'")
+    print(f"Stored & Linked: '{file_info.get('title')}'")
 
 
 class SmartIngestor:
@@ -307,7 +127,7 @@ class SmartIngestor:
         filename = os.path.basename(file_path)
 
         if self.db_manager.is_hash_present(file_hash):
-            print(f"⏩ SKIP: '{filename}' (Already in DB)")
+            print(f"SKIP: '{filename}' (Already in DB)")
             return False
 
         file_info = {
@@ -325,7 +145,7 @@ class SmartIngestor:
         file_hash = self.compute_hash_from_bytes(file_bytes)
         if self.db_manager.is_hash_present(file_hash):
             # Optional: Print that we are skipping
-            # print(f"⏩ SKIP: {filename}")
+            # print(f"SKIP: {filename}")
             return False 
 
         try:
@@ -334,7 +154,7 @@ class SmartIngestor:
             domain = "unknown_web_source"
 
         # PRINT URL HERE
-        print(f"🚀 INGESTING: {source_url}") 
+        print(f"INGESTING: {source_url}") 
         
         file_info = {
             "path": None,
@@ -472,11 +292,11 @@ class SmartIngestor:
             return title, authors, publishers, year, full_date
 
         except json.JSONDecodeError as je:
-            print(f"⚠️ JSON Parsing Failed. Raw output:\n{content}")
+            print(f"JSON Parsing Failed. Raw output:\n{content}")
             return "Metadata Parse Error", [], [], 0, None
             
         except Exception as e:
-            print(f"⚠️ Metadata Extraction Failed: {e}")
+            print(f"Metadata Extraction Failed: {e}")
             # Fallback
             fallback_title = "Unknown Title"
             if raw_docs and hasattr(raw_docs[0], 'metadata') and raw_docs[0].metadata.get('category') == 'Title':
@@ -513,12 +333,12 @@ class SmartIngestor:
                     raw_elements = loader.load()
 
         except Exception as e:
-            print(f"   ❌ OCR/Loading Failed: {e}")
+            print(f"OCR/Loading Failed: {e}")
             return False
 
         # EXTRACT METADATA
         meta_tuple = self._extract_metadata(raw_elements) 
-        print(f"   Found Metadata: {meta_tuple}")
+        print(f"Found Metadata: {meta_tuple}")
         
         title, authors, publishers, year, full_date = meta_tuple
         
@@ -565,7 +385,7 @@ class SmartIngestor:
         # EMBED CHUNKS & STORE
         batch_texts = [c.page_content for c in processed_chunks]
         if batch_texts:
-            print(f"   🧩 Embedding {len(processed_chunks)} chunks (Trust Level: {trust_level})...")
+            print(f"Embedding {len(processed_chunks)} chunks (Trust Level: {trust_level})...")
             chunk_vectors = self._generate_embedding_batch(batch_texts)
             
             if chunk_vectors:
@@ -573,7 +393,7 @@ class SmartIngestor:
                 store_in_neo4j(self.db_manager, file_info, processed_chunks, chunk_vectors, doc_vector)
                 return True
         else:
-            print(f"   ⚠️ No text content found.")
+            print(f"No text content found.")
             return False
 
     # UTILS (Unchanged mainly, simplified process_local_queue)
@@ -591,7 +411,7 @@ class SmartIngestor:
             resp.raise_for_status()
             return resp.json()["data"][0]["embedding"]
         except Exception as e:
-            print(f"   ❌ Embedding Error: {e}")
+            print(f"Embedding Error: {e}")
             return None
 
     def _generate_embedding_batch(self, texts):
@@ -600,12 +420,12 @@ class SmartIngestor:
             resp.raise_for_status()
             return [item["embedding"] for item in resp.json()["data"]]
         except Exception as e:
-            print(f"   ❌ Batch Embedding Error: {e}")
+            print(f"Batch Embedding Error: {e}")
             return None
 
     def process_local_queue(self):
         """Scans local folder and ingests."""
-        print(f"--- 🛡️  Scanning Local Directory: {self.base_dir} ---")
+        print(f"--- Scanning Local Directory: {self.base_dir} ---")
         to_process = []
         existing_hashes = self.db_manager.get_processed_hashes()
         
@@ -618,12 +438,12 @@ class SmartIngestor:
                     if file_hash in existing_hashes: continue
                     to_process.append(full_path)
         
-        print(f"📊 Found {len(to_process)} new files.")
+        print(f"Found {len(to_process)} new files.")
         for path in to_process:
             self.ingest_local_file(path)
             
         if to_process:
-            print("\n🔗 Running Graph Linker...")
+            print("\nRunning Graph Linker...")
             self.db_manager.build_graph_relationships()
 
 
@@ -634,7 +454,6 @@ class EduSpider(CrawlSpider):
         super(EduSpider, self).__init__(*args, **kwargs)
         self.start_urls = [start_url]
         
-        # 1. ROBUST DOMAIN HANDLING
         # If input is 'www.bom.gov.au', allow 'bom.gov.au' (which covers reg.bom.gov.au, etc.)
         if allowed_domain.startswith("www."):
             self.root_domain = allowed_domain[4:]
@@ -644,7 +463,7 @@ class EduSpider(CrawlSpider):
         # We allow the root domain. Scrapy automatically allows subdomains of this.
         self.allowed_domains = [self.root_domain]
         
-        # 2. STRICT BLOCKLIST (The Filter)
+        # STRICT BLOCKLIST
         # We explicitly block binary files that are useless for a text chatbot
         self.blocklist = [
             # Images
@@ -653,7 +472,7 @@ class EduSpider(CrawlSpider):
             'zip', 'tar', 'gz', 'rar', '7z', 'exe', 'msi', 'dmg', 'iso', 'bin',
             # Audio/Video
             'mp3', 'mp4', 'avi', 'mov', 'mkv', 'wav',
-            # Office / Data (Unless you add specific parsers later, exclude these)
+            # Data
             'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'json', 'xml',
             # Web Code
             'css', 'js', 'less', 'scss', 'woff', 'woff2', 'ttf', 'eot'
@@ -704,12 +523,17 @@ class EduSpider(CrawlSpider):
 
 
 class Neo4jPipeline:
-    def __init__(self, db_manager, pdf_ingestor):
+    def __init__(self, db_manager, pdf_ingestor, pdf_counter):
         self.db_manager = db_manager
         self.pdf_ingestor = pdf_ingestor
+        self.pdf_counter = pdf_counter
 
     def process_item(self, item, spider):
         if item['type'] == 'pdf':
+            # INCREMENT COUNTER SAFELY
+            with self.pdf_counter.get_lock():
+                self.pdf_counter.value += 1
+                
             filename = item['url'].split('/')[-1] or "downloaded.pdf"
             self.pdf_ingestor.ingest_from_stream(
                 filename=filename, file_bytes=item['body_bytes'], source_url=item['url']
@@ -728,10 +552,10 @@ class Neo4jPipeline:
             with self.db_manager.driver.session() as session:
                 session.run(query, url=item['url'], title=item['title'], text=item['text'], domain=item['source_domain'])
         except Exception as e:
-            print(f"   ❌ DB Error: {e}")
+            print(f"DB Error: {e}")
 
 
-def run_spider_process(start_url, allowed_domain, db_config, embed_url, embed_model, llm_url, llm_model, Neo4jManagerClass):
+def run_spider_process(start_url, allowed_domain, db_config, embed_url, embed_model, llm_url, llm_model, Neo4jManagerClass, pdf_counter):
     proc_db_manager = Neo4jManagerClass(db_config['uri'], db_config['user'], db_config['password'])
     proc_ingestor = SmartIngestor(proc_db_manager, embed_url, embed_model, llm_url, llm_model)
 
@@ -740,19 +564,19 @@ def run_spider_process(start_url, allowed_domain, db_config, embed_url, embed_mo
 
     settings = get_project_settings()
     settings.setdict({
-        # Use a Real Browser User Agent
         'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'ROBOTSTXT_OBEY': False,     # Ignore robots.txt to get full coverage
-        'CONCURRENT_REQUESTS': 16,   # Fast crawling
+        'ROBOTSTXT_OBEY': False,
+        'CONCURRENT_REQUESTS': 16,
         'DEPTH_LIMIT': 5, 
         'COOKIES_ENABLED': False,
-        'LOG_LEVEL': 'INFO',        # Set to INFO to see what URLs it is hitting
-        'JOBDIR': job_dir,          # To Resume if interupted
+        'LOG_LEVEL': 'INFO',
+        'JOBDIR': job_dir,
     })
 
     process = CrawlerProcess(settings)
     crawler = process.create_crawler(EduSpider)
-    pipeline = Neo4jPipeline(proc_db_manager, proc_ingestor)
+    # Pass counter to pipeline
+    pipeline = Neo4jPipeline(proc_db_manager, proc_ingestor, pdf_counter) 
     crawler.signals.connect(pipeline.process_item, signal=scrapy.signals.item_scraped)
     process.crawl(crawler, start_url=start_url, allowed_domain=allowed_domain)
     process.start()
@@ -770,17 +594,23 @@ class SmartURLIngestor:
 
     def ingest_domain(self, start_url):
         domain = urlparse(start_url).netloc.replace("www.", "")
-        print(f"\n🚜 Starting Scrapy for domain: {domain}")
+        print(f"\nStarting Scrapy for domain: {domain}")
         self.reset_domain_data(domain)
 
+        # Create Shared Counter (Integer initialized to 0)
+        pdf_counter = Value('i', 0)
+
         p = Process(target=run_spider_process, args=(
-            start_url, domain, self.db_config, self.embed_url, self.embed_model, self.llm_url, self.llm_model, self.Neo4jManagerClass
+            start_url, domain, self.db_config, self.embed_url, self.embed_model, 
+            self.llm_url, self.llm_model, self.Neo4jManagerClass, pdf_counter
         ))
         p.start()
         p.join()
-        print(f"✅ Scrapy finished processing {domain}.")
+        
+        print(f"Scrapy finished processing {domain}.")
+        print(f"Total PDF Files Encountered & Processed: {pdf_counter.value}")
 
     def reset_domain_data(self, domain):
-        print(f"   ♻️  Wiping old data for {domain}...")
+        print(f"Wiping old data for {domain}...")
         with self.local_db.driver.session() as session:
             session.run("MATCH (n) WHERE n.domain = $d OR n.source = $d DETACH DELETE n", d=domain)
